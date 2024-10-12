@@ -28,7 +28,7 @@ def index():
         url = request.form["url"]
         report = {}
 
-        # Fetching website info, DNS, SSL, etc.
+       
         report['website_info'] = get_website_info(url)
         report['ssl_info'] = check_ssl(url)
         report['ssl_certificate'] = get_ssl_certificate_info(url)
@@ -39,7 +39,7 @@ def index():
         report['whois_info'] = get_whois_info(url)
         report['page_load_time'] = get_page_load_time(url)
 
-        # Perform vulnerability checks
+      
         report['xss'] = check_xss(url)
         report['clickjacking'] = detect_clickjacking()
         report['cookies'] = check_cookies()
@@ -47,15 +47,14 @@ def index():
         report['mixed_content'] = detect_mixed_content(url)
         report['security_headers'] = check_security_headers(url)
 
-        # New Vulnerability Checks
+ 
         report['directory_traversal'] = check_directory_traversal(url)
         report['open_redirect'] = check_open_redirect(url)
 
-        # Calculate overall rating
         vulnerabilities_found = sum(
             [report[v] == "Vulnerable" for v in report if v in ['xss', 'clickjacking', 'directory_traversal', 'open_redirect']]
         )
-        total_checks = 6  # Adjust based on the number of checks
+        total_checks = 6 
         report['overall_rating'] = max(100 - (vulnerabilities_found / total_checks * 100), 0)
 
         return render_template("index.html", report=report, url=url)
@@ -63,6 +62,6 @@ def index():
     return render_template("index.html")
 
 if __name__ == '__main__':
-    # Use the PORT environment variable, default to 5000 if not set
+   
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)  # Enable debug mode
+    app.run(host='0.0.0.0', port=port, debug=True)  

@@ -4,7 +4,7 @@ import whois
 import ssl
 import time
 
-# Helper functions for fetching detailed website data
+
 def get_website_info(url):
     try:
         response = requests.get(url)
