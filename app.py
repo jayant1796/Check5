@@ -60,10 +60,10 @@ def index():
         report['overall_rating'] = max(100 - (vulnerabilities_found / total_checks * 100), 0)
 
         return render_template("index.html", report=report, url=url)
-
+        if __name__ == '__main__':
+            port = int(os.environ.get("PORT", 5000))
+            app.run(host='0.0.0.0', port=port, debug=True) 
+    
     return render_template("index.html")
 
- if __name__ == '__main__':
-    # Use the PORT environment variable, default to 5000 if not set
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True) 
+
