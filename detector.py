@@ -1,10 +1,9 @@
 import requests
 import socket
-import whois
 import ssl
 import time
 
-
+# Helper functions for fetching detailed website data
 def get_website_info(url):
     try:
         response = requests.get(url)
@@ -61,14 +60,6 @@ def get_geo_location(ip_address):
         return response.json()
     except:
         return "Geo-location info not available"
-
-def get_whois_info(url):
-    try:
-        domain = url.split("//")[-1].split("/")[0]
-        w = whois.whois(domain)
-        return w
-    except:
-        return "WHOIS info not available"
 
 def get_page_load_time(url):
     try:

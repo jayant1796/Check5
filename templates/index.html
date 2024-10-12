@@ -138,11 +138,6 @@
         </div>
 
         <div class="section">
-            <h4>WHOIS Information</h4>
-            <pre>{{ report['whois_info'] if report['whois_info'] else 'WHOIS info not available' }}</pre>
-        </div>
-
-        <div class="section">
             <h4>Vulnerability Report</h4>
             <table class="table">
                 <tr><th>XSS Vulnerability</th><td>{{ report['xss'] }}</td></tr>
