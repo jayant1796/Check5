@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Vulnerability Scanner</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin: 20px 0;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .table th, .table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f2f2f2;
+        }
+        .progress-bar {
+            background-color: #4CAF50;
+            height: 20px;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            background-color: #76c7c0;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Website Vulnerability Scanner</h1>
+        <form method="POST" action="/">
+            <input type="text" name="url" placeholder="Enter URL" required>
+            <button type="submit">Scan</button>
+        </form>
+
+        {% if report %}
+        <div class="section">
+            <h2>Website Information</h2>
+            <table class="table">
+                <tr><th>URL</th><td>{{ url }}</td></tr>
+                <tr><th>SSL Status</th><td>{{ report['ssl_info'] }}</td></tr>
+                <tr><th>Server Info</th><td>{{ report['server_info'] }}</td></tr>
+                <tr><th>Page Load Time</th><td>{{ report['page_load_time'] }} seconds</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h4>SSL Certificate Information</h4>
+            <table class="table">
+                <tr>
+                    <th>Common Name</th>
+                    <td>{{ report['ssl_certificate']['subject'][0][0][1] }}</td>
+                </tr>
+                <tr>
+                    <th>Issuer</th>
+                    <td>
+                        {% for issuer in report['ssl_certificate']['issuer'] %}
+                        {{ issuer[0][1] }} {% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr><th>Version</th><td>{{ report['ssl_certificate']['version'] }}</td></tr>
+                <tr><th>Serial Number</th><td>{{ report['ssl_certificate']['serialNumber'] }}</td></tr>
+                <tr><th>Valid From</th><td>{{ report['ssl_certificate']['notBefore'] }}</td></tr>
+                <tr><th>Valid Until</th><td>{{ report['ssl_certificate']['notAfter'] }}</td></tr>
+                <tr>
+                    <th>Subject Alternative Names</th>
+                    <td>
+                        {% for san in report['ssl_certificate']['subjectAltName'] %}
+                        {{ san[0][1] }} {% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h4>DNS Information</h4>
+            <table class="table">
+                <tr><th>Domain</th><td>{{ report['dns_info']['domain'] }}</td></tr>
+                <tr><th>Aliases</th>
+                    <td>
+                        {% if report['dns_info']['aliases'] %}
+                            {{ report['dns_info']['aliases'] | join(', ') }}
+                        {% else %}
+                            No aliases
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr><th>Addresses</th>
+                    <td>{{ report['dns_info']['addresses'] | join(', ') }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h4>Geo Location</h4>
+            <table class="table">
+                <tr><th>IP Address</th><td>{{ report['geo_location']['ip'] }}</td></tr>
+                <tr><th>City</th><td>{{ report['geo_location']['city'] }}</td></tr>
+                <tr><th>Region</th><td>{{ report['geo_location']['region'] }}</td></tr>
+                <tr><th>Country</th><td>{{ report['geo_location']['country'] }}</td></tr>
+                <tr><th>Organization</th><td>{{ report['geo_location']['org'] }}</td></tr>
+                <tr><th>Timezone</th><td>{{ report['geo_location']['timezone'] }}</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h4>WHOIS Information</h4>
+            <pre>{{ report['whois_info'] if report['whois_info'] else 'WHOIS info not available' }}</pre>
+        </div>
+
+        <div class="section">
+            <h4>Vulnerability Report</h4>
+            <table class="table">
+                <tr><th>XSS Vulnerability</th><td>{{ report['xss'] }}</td></tr>
+                <tr><th>Clickjacking</th><td>{{ report['clickjacking'] }}</td></tr>
+                <tr><th>Cookies Secure</th><td>{{ report['cookies'] }}</td></tr>
+                <tr><th>Content Security Policy</th><td>{{ report['csp'] }}</td></tr>
+                <tr><th>Mixed Content</th><td>{{ report['mixed_content'] }}</td></tr>
+                <tr><th>Security Headers</th><td>{{ report['security_headers'] }}</td></tr>
+                <tr><th>Directory Traversal</th><td>{{ report['directory_traversal'] }}</td></tr>
+                <tr><th>Open Redirect</th><td>{{ report['open_redirect'] }}</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h4>Overall Security Rating</h4>
+            <div class="progress-bar">
+                <span style="width: {{ report['overall_rating'] }}%">{{ report['overall_rating'] }}%</span>
+            </div>
+        </div>
+
+        {% endif %}
+    </div>
+
+</body>
+</html>
