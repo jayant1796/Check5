@@ -51,11 +51,11 @@ def index():
         report['directory_traversal'] = check_directory_traversal(url)
         report['open_redirect'] = check_open_redirect(url)
 
-       
+        # Calculate overall rating
         vulnerabilities_found = sum(
             [report[v] == "Vulnerable" for v in report if v in ['xss', 'clickjacking', 'directory_traversal', 'open_redirect']]
         )
-        total_checks = 6 
+        total_checks = 6  # Adjust based on the number of checks
         report['overall_rating'] = max(100 - (vulnerabilities_found / total_checks * 100), 0)
 
         return render_template("index.html", report=report, url=url)
@@ -63,6 +63,6 @@ def index():
     return render_template("index.html")
 
 if __name__ == '__main__':
-    
+    # Use the PORT environment variable, default to 5000 if not set
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)  
+    app.run(host='0.0.0.0', port=port, debug=True)  # Enable debug mode
